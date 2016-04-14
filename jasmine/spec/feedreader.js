@@ -28,11 +28,11 @@ $(function () {
          * and that the URL is not empty.
          */
         it('has URL defined', function () {
-            allFeeds.forEach(function (e) {
+            allFeeds.forEach(function (feed) {
                 // expect each url in allFeeds is defined
-                expect(e.url).toBeDefined();
+                expect(feed.url).toBeDefined();
                 // expect each url in allFeeds is not empty
-                expect(e.url.length).not.toBe(0);
+                expect(feed.url.length).not.toBe(0);
             });
         });
 
@@ -115,20 +115,25 @@ $(function () {
 
         var initFeed,
             newFeed;
-        // store the content of the initial screen
-        // then load the new feed.
+        // Call loadFeed twice with different ids
+        // to get different feeds 
         beforeEach(function (done) {
-            initFeed = $('.feed').find('.entry');
-            loadFeed(1, done);
+            loadFeed(0, function(){
+                initFeed = $('.feed').find('.entry');
+                loadFeed(1, function(){
+                    newFeed = $('.feed').find('.entry');
+                    done();
+                });
+            });
         });
+
         // ensure the content has been changed compared to the initial content
         it('Feed content has changed', function (done) {
-            newFeed = $('.feed').find('.entry');
             expect(initFeed).not.toBe(newFeed);
             done();
         });
         // go back to initial feed when finish
-        afterEach(function (done) {
+        afterAll(function (done) {
             loadFeed(0, done);
         });
     });
